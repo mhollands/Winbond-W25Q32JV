@@ -18,5 +18,12 @@ x - quit program, no arguments
 
 Write enable must be performed before each write or erase command.
 
+### Debugging Minicom
+Some tips for using Minicom on Linux to interact with the MBED code.  
+
+sudo minicom --device /dev/ttyACM* --baudrate 9600  
+
+Ensure 'Hardware Flow Control' is set to 'No' in 'Serial  port setup' in configuration.  
+
 ## Python Code
 TBC
