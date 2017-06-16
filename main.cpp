@@ -23,7 +23,7 @@ void readID()
     pc.printf("Device ID: 0x%02x \n\r", device);
 }
 
-void readPage(char a3, char a2, char a1)
+void readPage(char a3, char a2, char a1, int length)
 {
     pc.printf("Reading 0x%02x%02x%02x - 0x%02x%02xFF:\n\r", a3, a2, a1, a3, a2);
     cs = 0;
@@ -31,7 +31,7 @@ void readPage(char a3, char a2, char a1)
     spi.write(a3); //send MSB of address
     spi.write(a2); //send middle of address
     spi.write(a1); //send LSB of address
-    for(int addr = a1; addr  < 256; addr++)
+    for(int addr = a1; addr  < length; addr++)
     {
         char data = spi.write(0x00);
         pc.printf("%02x ", data);
@@ -153,9 +153,9 @@ int main() {
     spi.format(8,3);
     spi.frequency(1000000);
     wait(1);
-    pc.printf("hello world \n\r");
+    pc.baud (115200);
+    pc.printf("Hello World \n\r");
     wait(0.2);
-    
     bool exit = false;
     char command[4];
     
@@ -176,7 +176,8 @@ int main() {
             case 'd': eraseChip(); break;
             case 'i': readID(); break;
             case 'b': bufferPage(); break;
-            case 'r': readPage(command[1],command[2], command[3]); break;
+            case 'r': readPage(command[1],command[2], command[3], 256); break;
+            case 'R': readPage(command[1],command[2], command[3], 8192); break;
             case 'q': writeEnable(); break;
             case 'w': writePage(command[1], command[2], command[3]); waitBusy(); break;
             case 'e': erasePage(command[1], command[2], command[3]); waitBusy(); break;
@@ -184,4 +185,6 @@ int main() {
             default: break;
         }
     }
+    
+    pc.printf("Goodbye World \n\r");
 }
