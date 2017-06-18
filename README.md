@@ -7,6 +7,7 @@ The MBED code opens a serial connection to your PC over USB. Use a program like 
 Code will ask for a 4 character command. The first character indicates the command to execute and the next 3 characters are the arguments. Not all commands use all 3 arguments  (some use no arguments).
 
 c - reset chip, no arguments  
+h - toggle hex mode, no arguments
 d - erase chip, no arguments  
 i - read manufacturer and device ID, no arguments  
 r - read page, arguments are the three bytes which make up the address of the location to read  
