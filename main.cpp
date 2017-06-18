@@ -7,7 +7,7 @@ SPI spi(D11, D12, D13); // mosi, miso, sclk
 DigitalOut cs(D10); //cs
 
 char writeBuffer[256];
-
+bool hexMode = false; //hex mode outputs binary as hex string
 void readID()
 {
     cs = 0;
@@ -34,7 +34,39 @@ void readPage(char a3, char a2, char a1, int length)
     for(int addr = a1; addr  < length; addr++)
     {
         char data = spi.write(0x00);
-        pc.printf("%02x ", data);
+        if(hexMode)
+        {
+            pc.printf("%02x ", data);
+        }
+        else
+        {
+            pc.putc(data);    
+        }  
+    }
+    cs = 1;
+    pc.printf("\n\r");
+    
+}
+
+void readChip()
+{
+    pc.printf("Reading entire chip...\n\r");
+    cs = 0;
+    spi.write(0x03); //send command
+    spi.write(0); //send MSB of address
+    spi.write(0); //send middle of address
+    spi.write(0); //send LSB of address
+    for(int addr = 0; addr  < 0x0FFF; addr++)
+    {
+        char data = spi.write(0x00);
+        if(hexMode)
+        {
+            pc.printf("%02x ", data);
+        }
+        else
+        {
+            pc.putc(data);    
+        }  
     }
     cs = 1;
     pc.printf("\n\r");
@@ -125,18 +157,17 @@ void writePage(char a3, char a2, char a1)
 
 void bufferPage()
 {
-    pc.printf("Loading buffer: \n\r");
+    pc.printf("Loading buffer...\n\r");
     int i = 0;
     
     while(i < 256)
     {
         char data = pc.getc();
         writeBuffer[i] = data;     
-        pc.printf("%02x ", data);
         i++;
     }
      
-    pc.printf("\n\r");
+    pc.printf("Done \n\r");
 }
 
 void eraseChip()
@@ -161,23 +192,23 @@ int main() {
     
     while(!exit)
     {
-        pc.printf("Command: ");
         for(int i = 0 ; i  < 4; i++)
         {
             char c = pc.getc();
             command[i] = c;
-            pc.printf("%02x  ", c);    
         }
-        pc.printf("\n\r");
+        pc.printf("Command: %02x %02x %02x %02x \n\r", command[0], command[1], command[2], command[3]);    
         
         switch(command[0])
         {
             case 'c': reset(); break;
+            case 'h': hexMode = !hexMode; break;
             case 'd': eraseChip(); break;
             case 'i': readID(); break;
             case 'b': bufferPage(); break;
             case 'r': readPage(command[1],command[2], command[3], 256); break;
             case 'R': readPage(command[1],command[2], command[3], 8192); break;
+            case 'L': readChip(); break;
             case 'q': writeEnable(); break;
             case 'w': writePage(command[1], command[2], command[3]); waitBusy(); break;
             case 'e': erasePage(command[1], command[2], command[3]); waitBusy(); break;
