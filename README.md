@@ -1,8 +1,8 @@
 # Winbond-W25Q32JV
-Basic mbed library for peeking and poking a Winbond W25Q32JV. Implemented on MBED L031K6 however should be easy enough to convert to other MBED devices or even any other microcontroller with a SPI bus.
+Basic mbed library for peeking and poking a Winbond W25Q32JV over serial bus. Implemented on MBED L031K6 however should be easy enough to convert to other MBED devices or even any other microcontroller with a SPI bus.
 
 ## MBED Code
-The MBED code opens a serial connection to your PC over USB. Use a program like RealTerm (Windows) or Minicom (Linux) to interact with it.  Baud rate is 115200 baud.
+The MBED code opens a serial connection to your PC over USB. Use a program like RealTerm (Windows) or Minicom (Linux) to interact with it.  Baud rate is 115200 baud. A python script is provided to copy files from  your PC onto the chip.
 
 Code will ask for a 4 character command. The first character indicates the command to execute and the next 3 characters are the arguments. Not all commands use all 3 arguments  (some use no arguments).
 
@@ -28,4 +28,6 @@ sudo minicom --device /dev/ttyACM* --baudrate 9600
 Ensure 'Hardware Flow Control' is set to 'No' in 'Serial  port setup' in configuration.  
 
 ## Python Code
-TBC
+Run the script file_to_flash.py with two arguments - the serial port and the file name.
+
+E.g. python /dev/ttyACM1 myfile.txt would copy myfile.txt onto the chip via serial port ttyACM1.
