@@ -56,7 +56,7 @@ void readChip()
     spi.write(0); //send MSB of address
     spi.write(0); //send middle of address
     spi.write(0); //send LSB of address
-    for(int addr = 0; addr  < 0x0FFF; addr++)
+    for(int addr = 0; addr  < 0x3FFFFF; addr++)
     {
         char data = spi.write(0x00);
         if(hexMode)
